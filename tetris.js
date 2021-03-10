@@ -1059,7 +1059,8 @@ function gameLoop() {
 
           update();
 
-      } else if (gameState === 2 || gameState === 4) {
+      }
+        else if (gameState === 2 || gameState === 4) {
 
         // DAS Preload
         if (keysDown & flags.moveLeft) {
