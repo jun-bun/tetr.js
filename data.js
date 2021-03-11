@@ -667,7 +667,8 @@ var mySettings = {
   Grid: 1,
   Outline: 1,
   DASCut: 0,
-  NextSide: 0
+  NextSide: 0,
+  DrawDelay: 1
 };
 
 var settings = mySettings; // initialized by reference; replaced when game starts and replay

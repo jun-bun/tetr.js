@@ -14,13 +14,24 @@ Stack.prototype.new = function(x, y, hy) {
   this.hiddenHeight = hy;
   this.toGreyRow = this.height - 1;
   this.grid = cells;
-  
+  this.oldgrid = this.copygrid(this.grid);
+
   this.dirty = true;
   this.statisticsDirty = true;
 }
 /**
  * Adds tetro to the stack, and clears lines if they fill up.
  */
+Stack.prototype.copygrid = function(grid){
+  var cells = new Array(this.width);
+  for (var i = 0; i < this.width; i++){
+    cells[i] = new Array(this.height);
+    for (var k = i; k < this.height; k++){
+      cells[i][k] = grid[i][k];
+    }
+  }
+  return cells;
+}
 Stack.prototype.addPiece = function(piece) {
   var tetro = piece.tetro;
   var rect = pieces[piece.index].rect[piece.pos];
@@ -28,8 +39,9 @@ Stack.prototype.addPiece = function(piece) {
   var isSpin = false;
   var once = false;
   var piecesDel = 0; // for whole/symmetry
-  
   var bottomRow = []; // for backfire
+  if (mySettings.DrawDelay){this.oldgrid = this.copygrid(this.grid);}
+
   for (var x = 0; x < this.width; x++) {
     bottomRow.push(this.grid[x][this.height - 1]);
   }
@@ -43,7 +55,7 @@ Stack.prototype.addPiece = function(piece) {
     isSpin = true;
   }
   
-  do { // for gameover breaking
+  do { // for gameover breakingƒ
     // for symmetric
     var cellToDelWhole = [];
     // Add the piece to the stack.
@@ -382,13 +394,14 @@ Stack.prototype.delWholePieceAt = function(x, y) {
 /**
  * Draws the stack.
  */
-Stack.prototype.draw = function() {
+Stack.prototype.draw = function(grid = this.grid) {
   
   clear(stackCtx);
   if(settings.Outline === 0 || settings.Outline === 1 ||
     (settings.Outline === 2 && (gameState === 9 || gameState === 1))
   ) {
-    draw(this.grid, 0, -this.hiddenHeight, stackCtx, void 0, 0.3);
+    if (mySettings.DrawDelay){grid = this.oldgrid;}
+    draw(grid, 0, -this.hiddenHeight, stackCtx, void 0, 0.3);
   }
   
   if(gameparams.symmetry === 1 && timePenalty > 0){
